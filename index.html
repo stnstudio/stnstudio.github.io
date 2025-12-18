@@ -53,7 +53,7 @@
                               radial-gradient(circle at 99% 99%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
         }
 
-        /* 导航栏 - 玻璃拟态效果 */
+        /* 导航栏 */
         .navbar {
             position: fixed; 
             top: 0; 
@@ -167,7 +167,7 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Hero区域样式 */
+        /* Hero区域 */
         .hero {
             background: linear-gradient(135deg, var(--dark) 0%, #1e3a8a 100%);
             color: white; 
@@ -718,7 +718,7 @@
             margin-bottom: 3rem;
         }
 
-        /* 使用指南样式 */
+        /* 使用指南 */
         .guide-layout {
             display: flex;
             gap: 2rem;
@@ -804,7 +804,7 @@
             color: var(--text);
         }
 
-        /* 联系我们样式 */
+        /* 联系我们 */
         .contact-card {
             background: white;
             border-radius: var(--border-radius);
@@ -846,9 +846,8 @@
             box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
         }
 
-        /* ===== 极速计划专用样式（完全保留原样式，增强过渡） ===== */
+        /* 极速计划 */
         .stn-plan-container {
-            /* 完全独立的样式空间，使用原极速计划的所有CSS变量 */
             --plan-primary-dark: #0f172a;
             --plan-secondary-dark: #1e293b;
             --plan-accent: #0ea5e9;
@@ -868,7 +867,6 @@
             transition: opacity 0.5s ease;
         }
 
-        /* 背景动画效果 */
         .stn-plan-container::before {
             content: '';
             position: fixed;
@@ -1227,18 +1225,17 @@
             filter: drop-shadow(0 8px 20px rgba(14, 165, 233, 0.3));
         }
 
-        /* 金色边框套餐样式 */
-        .feature-card.gold-border {
+        .gold-border {
             border: 3px solid var(--gold);
             position: relative;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
         }
         
-        .feature-card.gold-border::before {
+        .gold-border::before {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
         }
         
-        .feature-card.gold-border .feature-icon {
+        .gold-border .feature-icon {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             animation: goldGlow 2s ease-in-out infinite alternate;
         }
@@ -1248,7 +1245,6 @@
             100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
         }
 
-        /* 响应式调整 */
         @media (max-width: 768px) {
             .stn-plan-container { padding: 15px; }
             .stn-plan-card { padding: 40px 20px; margin-top: 20px; }
@@ -1292,7 +1288,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 滚动条美化 */
+        /* 滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -1410,7 +1406,6 @@
             transform: translateY(0);
         }
 
-        /* 响应式调整 */
         @media (max-width: 768px) {
             .music-player {
                 bottom: 20px;
@@ -1426,12 +1421,7 @@
             }
         }
 
-        /* 音频加载提示 */
-        .music-loading {
-            animation: spin 1s linear infinite;
-        }
-
-        /* ===== 音量调节模态框样式 ===== */
+        /* 音量调节模态框 */
         .volume-modal-overlay {
             position: fixed;
             top: 0;
@@ -2046,7 +2036,7 @@
             </div>
         </div>
 
-        <!-- 独立的极速计划模态框 -->
+        <!-- 极速计划模态框 -->
         <div id="planDetailModal" class="stn-plan-modal">
             <div class="stn-plan-modal-content">
                 <span class="stn-plan-close-btn" onclick="closePlanModal()">&times;</span>
@@ -2112,13 +2102,11 @@
         }
 
         function navigateTo(pageName) {
-            // 隐藏所有页面
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
                 page.style.display = 'none';
             });
             
-            // 显示目标页面
             const targetPage = document.getElementById(`page-${pageName}`);
             if (targetPage) {
                 targetPage.style.display = 'block';
@@ -2128,17 +2116,14 @@
                 }
             }
             
-            // 更新导航栏激活状态
             document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
             document.querySelector(`.nav-menu li[data-page="${pageName}"]`)?.classList.add('active');
             
-            // 关闭移动端菜单
             document.getElementById('navMenu').classList.remove('active');
             const icon = document.querySelector('#mobileToggle i');
             icon.classList.add('fa-bars');
             icon.classList.remove('fa-times');
             
-            // 滚动到顶部
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -2153,7 +2138,6 @@
                 icon.classList.toggle('fa-times');
             });
             
-            // 点击菜单项后关闭菜单
             navMenu.querySelectorAll('li').forEach(item => {
                 item.addEventListener('click', () => {
                     navMenu.classList.remove('active');
@@ -2177,22 +2161,18 @@
         }
 
         function showGuideSection(sectionName) {
-            // 隐藏所有 section
             const sections = document.querySelectorAll('#guideContent .content-section');
             sections.forEach(section => section.style.display = 'none');
             
-            // 显示目标 section
             const targetSection = document.getElementById(`section-${sectionName}`);
             if (targetSection) {
                 targetSection.style.display = 'block';
             }
             
-            // 更新侧边栏激活状态
             const guideSidebar = document.getElementById('guideSidebar');
             guideSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
             guideSidebar.querySelector(`li[data-section="${sectionName}"]`)?.classList.add('active');
             
-            // 移动端自动滚动到内容区域
             if (window.innerWidth <= 768) {
                 const content = document.getElementById('guideContent');
                 content.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2243,7 +2223,7 @@
             }, 300);
         }
 
-        // ===== 极速计划专属功能（完全保留原逻辑，增强过渡） =====
+        // ===== 极速计划功能 =====
         function showPlanPage(pageId) {
             const currentPage = document.querySelector('.stn-plan-page-section.active');
             currentPage.style.opacity = '0';
@@ -2443,9 +2423,10 @@
             }
         };
 
-        // ===== 音乐播放器功能（带音量调节）=====
+        // ===== 音乐播放器功能（支持随机播放）=====
         function initMusicPlayer() {
-            const audio = new Audio('./music.mp3');
+            // 核心变量
+            let audio = null;
             const musicToggle = document.getElementById('musicToggle');
             const musicIcon = document.getElementById('musicIcon');
             const musicTooltip = document.getElementById('musicTooltip');
@@ -2456,12 +2437,141 @@
             const volumeCancelBtn = document.getElementById('volumeCancelBtn');
             
             let isPlaying = false;
-            let userVolume = 0.4; // 默认音量40%
+            let userVolume = 0.2; // 默认音量20%
             let autoPlayTimeout = null;
+            let currentTrackIndex = 0;
+            let availableTracks = []; // 存储实际存在的音轨
 
-            // 配置音频
-            audio.volume = userVolume;
-            audio.loop = true;
+            // 音轨配置（支持 music1.mp3 到 music10.mp3）
+            const MAX_TRACKS = 10;
+            
+            // 加载随机音轨
+            function loadRandomTrack() {
+                if (availableTracks.length === 0) {
+                    // 如果还没检查过哪些音轨存在，先检查
+                    checkAvailableTracks();
+                }
+                
+                if (availableTracks.length === 0) {
+                    console.error('没有找到任何音轨文件');
+                    musicTooltip.textContent = '未找到音乐文件';
+                    musicToggle.style.opacity = '0.5';
+                    musicToggle.disabled = true;
+                    return null;
+                }
+                
+                // 随机选择一个音轨
+                const randomIndex = Math.floor(Math.random() * availableTracks.length);
+                currentTrackIndex = randomIndex;
+                const trackNumber = availableTracks[currentTrackIndex];
+                
+                // 创建新的 Audio 对象
+                const newAudio = new Audio(`./music${trackNumber}.mp3`);
+                newAudio.volume = userVolume;
+                newAudio.loop = false; // 不循环，播放完自动下一首
+                
+                // 监听播放完成事件，自动播放下一首
+                newAudio.addEventListener('ended', () => {
+                    if (isPlaying) {
+                        // 延迟1秒后播放下一首
+                        setTimeout(() => {
+                            playNextTrack();
+                        }, 1000);
+                    }
+                });
+                
+                // 监听错误事件
+                newAudio.addEventListener('error', (e) => {
+                    console.error(`音轨 music${trackNumber}.mp3 加载失败:`, e);
+                    // 从可用列表中移除
+                    availableTracks = availableTracks.filter(track => track !== trackNumber);
+                    
+                    if (isPlaying && availableTracks.length > 0) {
+                        // 尝试播放下一首
+                        setTimeout(() => {
+                            playNextTrack();
+                        }, 500);
+                    }
+                });
+                
+                return newAudio;
+            }
+
+            // 检查哪些音轨文件实际存在（通过尝试加载）
+            function checkAvailableTracks() {
+                availableTracks = [];
+                let checkedCount = 0;
+                
+                for (let i = 1; i <= MAX_TRACKS; i++) {
+                    const testAudio = new Audio(`./music${i}.mp3`);
+                    
+                    testAudio.addEventListener('canplaythrough', () => {
+                        availableTracks.push(i);
+                        console.log(`发现音轨: music${i}.mp3`);
+                    });
+                    
+                    testAudio.addEventListener('error', () => {
+                        console.log(`音轨不存在: music${i}.mp3`);
+                    });
+                    
+                    // 设置一个短暂的超时来快速检查
+                    testAudio.load();
+                    checkedCount++;
+                }
+                
+                // 等待所有检查完成
+                setTimeout(() => {
+                    console.log(`可用音轨列表:`, availableTracks);
+                    if (availableTracks.length === 0) {
+                        musicTooltip.textContent = '未找到音乐文件';
+                        musicToggle.style.opacity = '0.5';
+                        musicToggle.disabled = true;
+                    } else {
+                        musicTooltip.textContent = `点击播放音乐 (共${availableTracks.length}首)`;
+                        musicToggle.style.opacity = '1';
+                        musicToggle.disabled = false;
+                    }
+                }, 1000);
+            }
+
+            // 播放下一首（随机选择）
+            function playNextTrack() {
+                if (!isPlaying || availableTracks.length === 0) return;
+                
+                // 停止当前音频
+                if (audio) {
+                    audio.pause();
+                    audio.remove();
+                }
+                
+                // 加载新的随机音轨
+                audio = loadRandomTrack();
+                if (audio) {
+                    audio.play().then(() => {
+                        musicIcon.classList.remove('fa-play');
+                        musicIcon.classList.add('fa-pause');
+                        musicTooltip.textContent = '点击暂停音乐';
+                    }).catch(err => {
+                        console.log('播放失败:', err);
+                    });
+                }
+            }
+
+            // 开始播放（首次播放）
+            function startPlay() {
+                audio = loadRandomTrack();
+                if (audio) {
+                    audio.play().then(() => {
+                        isPlaying = true;
+                        musicIcon.classList.remove('fa-play');
+                        musicIcon.classList.add('fa-pause');
+                        musicTooltip.textContent = '点击暂停音乐';
+                    }).catch(err => {
+                        console.log('播放失败:', err);
+                        showMusicInteractionPrompt();
+                    });
+                }
+            }
 
             // 更新音量显示
             function updateVolumeDisplay(value) {
@@ -2490,18 +2600,12 @@
             // 确认按钮事件
             volumeConfirmBtn.addEventListener('click', () => {
                 userVolume = volumeSlider.value / 100;
-                audio.volume = userVolume;
+                if (audio) {
+                    audio.volume = userVolume;
+                }
                 hideVolumeModal();
                 // 开始播放
-                audio.play().then(() => {
-                    isPlaying = true;
-                    musicIcon.classList.remove('fa-play');
-                    musicIcon.classList.add('fa-pause');
-                    musicTooltip.textContent = '点击暂停音乐';
-                }).catch(err => {
-                    console.log('播放失败:', err);
-                    showMusicInteractionPrompt();
-                });
+                startPlay();
             });
 
             // 取消按钮事件
@@ -2527,8 +2631,10 @@
             // 播放/暂停切换
             function togglePlay() {
                 if (isPlaying) {
-                    // 暂停 - 直接暂停，不显示音量调节
-                    audio.pause();
+                    // 暂停
+                    if (audio) {
+                        audio.pause();
+                    }
                     musicIcon.classList.remove('fa-pause');
                     musicIcon.classList.add('fa-play');
                     musicTooltip.textContent = '点击播放音乐';
@@ -2544,16 +2650,8 @@
 
             // 5秒延迟自动播放（需要用户先交互）
             function attemptAutoPlay() {
-                if (document.hasInteraction) {
-                    audio.play().then(() => {
-                        isPlaying = true;
-                        musicIcon.classList.remove('fa-play');
-                        musicIcon.classList.add('fa-pause');
-                        musicTooltip.textContent = '点击暂停音乐';
-                    }).catch(err => {
-                        console.log('自动播放被阻止:', err);
-                        showMusicInteractionPrompt();
-                    });
+                if (document.hasInteraction && availableTracks.length > 0) {
+                    startPlay();
                 }
             }
 
@@ -2575,19 +2673,6 @@
             document.addEventListener('click', interactionHandler, { once: true });
             document.addEventListener('touchstart', interactionHandler, { once: true });
             document.addEventListener('keydown', interactionHandler, { once: true });
-
-            // 音频加载完成
-            audio.addEventListener('canplaythrough', () => {
-                console.log('音乐加载完成');
-            });
-
-            // 音频错误处理
-            audio.addEventListener('error', (e) => {
-                console.error('音频加载失败:', e);
-                musicTooltip.textContent = '音乐文件加载失败';
-                musicToggle.style.opacity = '0.5';
-                musicToggle.style.pointerEvents = 'none';
-            });
 
             // 显示交互提示
             function showMusicInteractionPrompt() {
@@ -2612,6 +2697,9 @@
                     setTimeout(() => prompt.remove(), 300);
                 }, 3000);
             }
+
+            // 初始化时检查可用音轨
+            checkAvailableTracks();
         }
 
         // ===== 初始化 =====
