@@ -6,7 +6,6 @@
     <title>STNstudio - 智慧宿舍网络解决方案</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS 保持不变（与之前相同） */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -1638,7 +1637,6 @@
         </section>
     </div>
 
-    <!-- 其他页面内容保持不变... -->
     <!-- 关于我们 -->
     <div class="page" data-page="about" id="page-about">
         <section class="page-header">
@@ -2425,7 +2423,7 @@
             }
         };
 
-        // ===== 音乐播放器功能（支持FLAC/MP3，每次点击播放都随机切换）=====
+        // ===== 音乐播放器功能（支持随机播放）=====
         function initMusicPlayer() {
             // 核心变量
             let audio = null;
@@ -2439,25 +2437,86 @@
             const volumeCancelBtn = document.getElementById('volumeCancelBtn');
             
             let isPlaying = false;
-            let userVolume = 0.4; // 默认音量40%
+            let userVolume = 0.2; // 默认音量20%
             let autoPlayTimeout = null;
-            let lastPlayedIndex = -1; // 记录上一首，避免重复
-            let availableTracks = []; // 存储可用的音轨信息
+            let currentTrackIndex = 0;
+            let availableTracks = []; // 存储实际存在的音轨
 
-            // 音轨配置（支持 music1.mp3 到 music10.mp3，以及 music1.flac 到 music10.flac）
+            // 音轨配置（支持 music1.mp3 到 music10.mp3）
             const MAX_TRACKS = 10;
             
-            // 检查哪些音轨文件实际存在（支持 MP3 和 FLAC）
+            // 加载随机音轨
+            function loadRandomTrack() {
+                if (availableTracks.length === 0) {
+                    // 如果还没检查过哪些音轨存在，先检查
+                    checkAvailableTracks();
+                }
+                
+                if (availableTracks.length === 0) {
+                    console.error('没有找到任何音轨文件');
+                    musicTooltip.textContent = '未找到音乐文件';
+                    musicToggle.style.opacity = '0.5';
+                    musicToggle.disabled = true;
+                    return null;
+                }
+                
+                // 随机选择一个音轨
+                const randomIndex = Math.floor(Math.random() * availableTracks.length);
+                currentTrackIndex = randomIndex;
+                const trackNumber = availableTracks[currentTrackIndex];
+                
+                // 创建新的 Audio 对象
+                const newAudio = new Audio(`./music${trackNumber}.mp3`);
+                newAudio.volume = userVolume;
+                newAudio.loop = false; // 不循环，播放完自动下一首
+                
+                // 监听播放完成事件，自动播放下一首
+                newAudio.addEventListener('ended', () => {
+                    if (isPlaying) {
+                        // 延迟1秒后播放下一首
+                        setTimeout(() => {
+                            playNextTrack();
+                        }, 1000);
+                    }
+                });
+                
+                // 监听错误事件
+                newAudio.addEventListener('error', (e) => {
+                    console.error(`音轨 music${trackNumber}.mp3 加载失败:`, e);
+                    // 从可用列表中移除
+                    availableTracks = availableTracks.filter(track => track !== trackNumber);
+                    
+                    if (isPlaying && availableTracks.length > 0) {
+                        // 尝试播放下一首
+                        setTimeout(() => {
+                            playNextTrack();
+                        }, 500);
+                    }
+                });
+                
+                return newAudio;
+            }
+
+            // 检查哪些音轨文件实际存在（通过尝试加载）
             function checkAvailableTracks() {
                 availableTracks = [];
                 let checkedCount = 0;
-                const totalChecks = MAX_TRACKS * 2; // MP3 和 FLAC 两种格式
                 
                 for (let i = 1; i <= MAX_TRACKS; i++) {
-                    // 检查 MP3 格式
-                    checkTrackExists(i, 'mp3');
-                    // 检查 FLAC 格式
-                    checkTrackExists(i, 'flac');
+                    const testAudio = new Audio(`./music${i}.mp3`);
+                    
+                    testAudio.addEventListener('canplaythrough', () => {
+                        availableTracks.push(i);
+                        console.log(`发现音轨: music${i}.mp3`);
+                    });
+                    
+                    testAudio.addEventListener('error', () => {
+                        console.log(`音轨不存在: music${i}.mp3`);
+                    });
+                    
+                    // 设置一个短暂的超时来快速检查
+                    testAudio.load();
+                    checkedCount++;
                 }
                 
                 // 等待所有检查完成
@@ -2472,97 +2531,20 @@
                         musicToggle.style.opacity = '1';
                         musicToggle.disabled = false;
                     }
-                }, 1500);
-            }
-            
-            // 检查单个音轨是否存在
-            function checkTrackExists(trackNumber, format) {
-                const testAudio = new Audio(`./music${trackNumber}.${format}`);
-                
-                testAudio.addEventListener('canplaythrough', () => {
-                    // 添加到可用列表（避免重复添加）
-                    if (!availableTracks.some(track => track.number === trackNumber && track.format === format)) {
-                        availableTracks.push({ number: trackNumber, format: format });
-                        console.log(`发现音轨: music${trackNumber}.${format}`);
-                    }
-                });
-                
-                testAudio.addEventListener('error', () => {
-                    console.log(`音轨不存在: music${trackNumber}.${format}`);
-                });
-                
-                testAudio.load();
+                }, 1000);
             }
 
-            // 加载随机音轨（避免与上一首重复）
-            function loadRandomTrack() {
-                if (availableTracks.length === 0) {
-                    console.error('没有找到任何音轨文件');
-                    return null;
-                }
+            // 播放下一首（随机选择）
+            function playNextTrack() {
+                if (!isPlaying || availableTracks.length === 0) return;
                 
-                if (availableTracks.length === 1) {
-                    // 只有一首，直接播放
-                    lastPlayedIndex = 0;
-                    return createAudioElement(availableTracks[0]);
-                }
-                
-                // 随机选择，但要避免与上一首重复
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * availableTracks.length);
-                } while (randomIndex === lastPlayedIndex && availableTracks.length > 1);
-                
-                lastPlayedIndex = randomIndex;
-                const trackInfo = availableTracks[randomIndex];
-                
-                return createAudioElement(trackInfo);
-            }
-            
-            // 创建 Audio 元素并设置事件监听
-            function createAudioElement(trackInfo) {
-                // 停止并移除旧的音频
+                // 停止当前音频
                 if (audio) {
                     audio.pause();
                     audio.remove();
                 }
                 
-                // 创建新的 Audio 对象
-                const newAudio = new Audio(`./music${trackInfo.number}.${trackInfo.format}`);
-                newAudio.volume = userVolume;
-                newAudio.loop = false; // 不循环，播放完自动下一首
-                
-                // 监听播放完成事件，自动播放下一首（随机）
-                newAudio.addEventListener('ended', () => {
-                    if (isPlaying) {
-                        setTimeout(() => {
-                            playNextTrack();
-                        }, 1000);
-                    }
-                });
-                
-                // 监听错误事件
-                newAudio.addEventListener('error', (e) => {
-                    console.error(`音轨 music${trackInfo.number}.${trackInfo.format} 加载失败:`, e);
-                    // 从可用列表中移除
-                    availableTracks = availableTracks.filter(track => 
-                        !(track.number === trackInfo.number && track.format === trackInfo.format)
-                    );
-                    
-                    if (isPlaying && availableTracks.length > 0) {
-                        setTimeout(() => {
-                            playNextTrack();
-                        }, 500);
-                    }
-                });
-                
-                return newAudio;
-            }
-
-            // 播放下一首（随机）
-            function playNextTrack() {
-                if (!isPlaying || availableTracks.length === 0) return;
-                
+                // 加载新的随机音轨
                 audio = loadRandomTrack();
                 if (audio) {
                     audio.play().then(() => {
@@ -2575,7 +2557,7 @@
                 }
             }
 
-            // 开始播放（首次播放或暂停后重新播放）
+            // 开始播放（首次播放）
             function startPlay() {
                 audio = loadRandomTrack();
                 if (audio) {
@@ -2622,7 +2604,7 @@
                     audio.volume = userVolume;
                 }
                 hideVolumeModal();
-                // 开始播放（会加载新的随机音轨）
+                // 开始播放
                 startPlay();
             });
 
@@ -2646,10 +2628,10 @@
                 }
             });
 
-            // 播放/暂停切换（每次点击播放都会随机加载新歌曲）
+            // 播放/暂停切换
             function togglePlay() {
                 if (isPlaying) {
-                    // 暂停 - 直接暂停当前音频
+                    // 暂停
                     if (audio) {
                         audio.pause();
                     }
@@ -2658,7 +2640,7 @@
                     musicTooltip.textContent = '点击播放音乐';
                     isPlaying = false;
                 } else {
-                    // 播放 - 显示音量调节，确认后会加载新的随机音轨
+                    // 播放 - 显示音量调节
                     showVolumeModal();
                 }
             }
